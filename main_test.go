@@ -1,20 +1,20 @@
 package main
 
 import (
+	"bytes"
 	"log"
 	"net/http"
-	"bytes"
-	"testing"
 	"os"
+	"testing"
 )
 
 func TestExecCommand(t *testing.T) {
 	in := Request{
-		Cmd: "echo 'hello' 2>&1",
-		Os: "linux",
+		Cmd:   "echo 'hello' 2>&1",
+		Os:    "linux",
 		Stdin: "",
 	}
-	out := &Response {
+	out := &Response{
 		Stdout: "'hello' 2>&1\n",
 		Stderr: "",
 	}
@@ -40,8 +40,8 @@ func TestHandleConnection(t *testing.T) {
 	for ind, elem := range req {
 		req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(elem)))
 		req.Header.Set("X-Custom-Header", "myvalue")
-    	req.Header.Set("Content-Type", "application/json")
-		
+		req.Header.Set("Content-Type", "application/json")
+
 		resp, err := client.Do(req)
 		if err != nil {
 			panic(err)
