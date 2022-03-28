@@ -33,8 +33,15 @@ jobs:
               check-latest: True
       - name: Setup crt
         run: |
-            openssl genrsa -out server.key 2048
-            openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
+            openssl req \
+                    -new \
+                    -newkey rsa:4096 \
+                    -days 3650 \
+                    -nodes \
+                    -x509 \
+                    -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=localhost" \
+                    -keyout server.key \
+                    -out server.crt
             apt-get install -y ca-certificates
             cp server.crt /usr/local/share/ca-certificates
             update-ca-certificates
