@@ -42,9 +42,9 @@ jobs:
                     -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=localhost" \
                     -keyout server.key \
                     -out server.crt
-            apt-get install -y ca-certificates
-            cp server.crt /usr/local/share/ca-certificates
-            update-ca-certificates
+            sudo apt-get install -y ca-certificates
+            sudo cp server.crt /usr/local/share/ca-certificates
+            sudo update-ca-certificates
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
