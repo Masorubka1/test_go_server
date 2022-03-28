@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"bytes"
 	"testing"
+	"os"
 )
 
 func TestExecCommand(t *testing.T) {
@@ -23,7 +24,14 @@ func TestExecCommand(t *testing.T) {
 	}
 }
 
+func skipCI(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
+}
+
 func TestHandleConnection(t *testing.T) {
+	skipCI(t)
 	log.SetFlags(log.Lshortfile)
 	client := &http.Client{}
 	url := "https://localhost:8085/api/v1/remote-execution"
