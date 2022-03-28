@@ -47,7 +47,5 @@ jobs:
             sudo update-ca-certificates
 
       # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          go run main.go
-          go test -v
+      - name: Tests
+        run: go test -v
