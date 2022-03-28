@@ -56,8 +56,8 @@ func HandleConnection(w http.ResponseWriter, r *http.Request) {
 	}
 
 	splitedRequest := strings.Split(string(body), "\n")
-	ans := make([]*Response, len(splitedRequest))
-	for ind, msg := range splitedRequest {
+	ch_in := make(chan *Response, len(splitedRequest))
+	for _, msg := range splitedRequest {
 		if len(msg) > 3 && msg[1] == '{' && msg[len(msg)-2] == '}' { // 1/len(msg) - 2 - min left/right position of request
 			var bodyRequest Request
 			err := json.Unmarshal([]byte(msg[1:len(msg)-1]), &bodyRequest)
@@ -66,11 +66,20 @@ func HandleConnection(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "bad body", http.StatusBadRequest)
 				return
 			}
-			ans[ind] = ExecCommand(&bodyRequest)
+
+			go func(ch chan *Response, bodyRequest *Request) { // async execute commands
+				ch <- ExecCommand(bodyRequest)
+			}(ch_in, &bodyRequest)
+
 		} else {
 			http.Error(w, "bad body", http.StatusBadRequest)
 			return
 		}
+	}
+
+	ans := make([]*Response, len(splitedRequest))
+	for i := 0; i < len(splitedRequest); i++ {
+		ans[i] = <-ch_in
 	}
 
 	for _, elem := range ans {
