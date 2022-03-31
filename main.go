@@ -103,6 +103,6 @@ func main() {
 		},
 	}
 
-	go http.HandleFunc("/api/v1/remote-execution", HandleConnection) // already async ?
+	http.HandleFunc("/api/v1/remote-execution", HandleConnection)
 	s.ListenAndServeTLS("server.crt", "server.key")
 }
